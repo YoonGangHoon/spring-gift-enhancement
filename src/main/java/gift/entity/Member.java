@@ -1,10 +1,25 @@
 package gift.entity;
 
+import jakarta.persistence.*;
+
+@Entity
 public class Member {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private final String name;
-    private final String email;
-    private final String password;
+
+    @Column(length = 15, nullable = false)
+    private String name;
+
+    @Column(nullable = false, unique = true)
+    private String email;
+
+    @Column(nullable = false)
+    private String password;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Role role;
 
     public Member(Long id, String name, String email, String password, Role role) {
@@ -15,19 +30,14 @@ public class Member {
         this.role = role;
     }
 
-    public Member(Long id, String name, String email, String password) {
-        this.id = id;
+    public Member(String name, String email, String password) {
         this.name = name;
         this.email = email;
         this.password = password;
         this.role = Role.USER;
     }
 
-    public Member(String name, String email, String password) {
-        this.name = name;
-        this.email = email;
-        this.password = password;
-    }
+    public Member(){}
 
     public Long getId() {
         return id;
@@ -47,5 +57,11 @@ public class Member {
 
     public Role getRole() {
         return role;
+    }
+
+    public void update(String name, String email, String password) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
     }
 }

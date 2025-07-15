@@ -1,25 +1,38 @@
 package gift.entity;
 
-public class Wish {
-    private final Long id;
-    private final Long memberId;
-    private final Long productId;
+import jakarta.persistence.*;
 
-    public Wish(Long id, Long memberId, Long productId) {
-        this.id = id;
-        this.memberId = memberId;
-        this.productId = productId;
+@Entity
+public class Wish {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "memberId")
+    private Member member;
+
+    @ManyToOne
+    @JoinColumn(name = "productId")
+    private Product product;
+
+    public Wish() {};
+
+    public Wish(Member member, Product product) {
+        this.member = member;
+        this.product = product;
     }
 
     public Long getId() {
         return id;
     }
 
-    public Long getMemberId() {
-        return memberId;
+    public Member getMember() {
+        return member;
     }
 
-    public Long getProductId() {
-        return productId;
+    public Product getProduct() {
+        return product;
     }
 }
