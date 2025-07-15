@@ -1,11 +1,22 @@
 package gift.entity;
 
+import jakarta.persistence.*;
+
+@Entity
 public class Product {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private final String name;
-    private final Integer price;
-    private final String imageUrl;
+
+    @Column(length = 15, nullable = false)
+    private String name;
+
+    @Column(nullable = false)
+    private Integer price;
+
+    @Column(nullable = false)
+    private String imageUrl;
 
     public Product(String name, Integer price, String imageUrl) {
         this.name = name;
@@ -13,12 +24,7 @@ public class Product {
         this.imageUrl = imageUrl;
     }
 
-    public Product(Long id, String name, Integer price, String imageUrl) {
-        this.id = id;
-        this.name = name;
-        this.price = price;
-        this.imageUrl = imageUrl;
-    }
+    public Product() {}
 
     public Long getId() {
         return id;
@@ -34,5 +40,11 @@ public class Product {
 
     public String getImageUrl() {
         return imageUrl;
+    }
+
+    public void update(String name, int price, String imageUrl) {
+        this.name = name;
+        this.price = price;
+        this.imageUrl = imageUrl;
     }
 }
