@@ -7,6 +7,7 @@ import gift.entity.Member;
 import gift.exception.*;
 import gift.jwt.JwtProvider;
 import gift.repository.MemberRepository;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 
@@ -62,17 +63,25 @@ public class MemberService {
         return new MemberResponseDto(member.getId(), member.getName(), member.getEmail(), member.getPassword());
     }
 
+    @Transactional
     public MemberResponseDto update(Long memberId, @Valid MemberRequestDto requestDto) {
-        Member member = memberRepository.update(memberId, requestDto.name(), requestDto.email(), requestDto.password())
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberNotFoundException("id", memberId.toString()));
-        return new MemberResponseDto(member.getId(), member.getName(), member.getEmail(), member.getPassword());
+
+        member.update(requestDto.name(), requestDto.email(), requestDto.password());
+
+        return new MemberResponseDto(
+                member.getId(),
+                member.getName(),
+                member.getEmail(),
+                member.getPassword()
+        );
     }
 
     public void delete(Long memberId) {
-        boolean deleted = memberRepository.deleteById(memberId);
-        if (!deleted) {
-            throw new MemberNotFoundException("id", memberId.toString());
-        }
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberNotFoundException("id", memberId.toString()));
+        memberRepository.delete(member);
     }
 
 }
