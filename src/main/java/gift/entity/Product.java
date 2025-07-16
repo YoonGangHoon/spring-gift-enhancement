@@ -42,9 +42,15 @@ public class Product {
         return imageUrl;
     }
 
-    public void update(String name, int price, String imageUrl) {
-        this.name = name;
-        this.price = price;
+    public void changePrice(int newPrice) {
+        this.price = newPrice;
+    }
+
+    public void renameTo(String newName) {
+        this.name = newName;
+    }
+
+    public void changeImage(String imageUrl) {
         this.imageUrl = imageUrl;
     }
 }

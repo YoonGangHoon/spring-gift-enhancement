@@ -44,7 +44,9 @@ public class MemberJpaTest {
         entityManager.clear();
 
         Member found = memberRepository.findByEmail("hong@naver.com").orElseThrow();
-        found.update("윤강훈", "yghun021007@naver.com", "password");
+        found.renameTo("윤강훈");
+        found.changeEmail("yghun021007@naver.com");
+        found.changePassword("password");
 
         entityManager.flush();
         entityManager.clear();

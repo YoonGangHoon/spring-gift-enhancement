@@ -34,7 +34,9 @@ public class ProductJpaTest {
         productRepository.save(product);
 
         Product found = productRepository.findById(product.getId()).orElseThrow();
-        found.update("아이스 아메리카노", 4000, "ice_americano.jpg");
+        found.renameTo("아이스 아메리카노");
+        found.changePrice(4000);
+        found.changeImage("ice_americano.jpg");
 
         entityManager.flush();
         entityManager.clear();

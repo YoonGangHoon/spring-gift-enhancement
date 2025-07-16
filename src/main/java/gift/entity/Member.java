@@ -59,9 +59,15 @@ public class Member {
         return role;
     }
 
-    public void update(String name, String email, String password) {
-        this.name = name;
-        this.email = email;
-        this.password = password;
+    public void renameTo(String newName) {
+        this.name = newName;
+    }
+
+    public void changeEmail(String newEmail) {
+        this.email = newEmail;
+    }
+
+    public void changePassword(String newPassword) {
+        this.password = newPassword;
     }
 }

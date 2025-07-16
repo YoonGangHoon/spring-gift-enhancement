@@ -68,7 +68,9 @@ public class MemberService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberNotFoundException("id", memberId.toString()));
 
-        member.update(requestDto.name(), requestDto.email(), requestDto.password());
+        member.renameTo(requestDto.name());
+        member.changeEmail(requestDto.email());
+        member.changePassword(requestDto.password());
 
         return new MemberResponseDto(
                 member.getId(),
