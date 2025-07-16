@@ -19,7 +19,7 @@ public class MemberJpaTest {
     private TestEntityManager entityManager;
 
     @Autowired
-    MemberRepository memberRepository;
+    private MemberRepository memberRepository;
 
     @Test
     void 회원_저장_및_조회_성공() {
