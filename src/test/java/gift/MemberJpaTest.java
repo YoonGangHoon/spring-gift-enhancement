@@ -23,7 +23,8 @@ public class MemberJpaTest {
 
     @Test
     void 회원_저장_및_조회_성공() {
-        entityManager.persist(new Member("홍길동", "hong@naver.com", "password"));
+        Member newMember = new Member("홍길동", "hong@naver.com", "password");
+        memberRepository.save(newMember);
 
         Member found = memberRepository.findByEmail("hong@naver.com").orElseThrow();
         assertThat(found.getName()).isEqualTo("홍길동");
