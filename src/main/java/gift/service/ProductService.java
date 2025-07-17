@@ -5,10 +5,9 @@ import gift.dto.ProductResponseDto;
 import gift.entity.Product;
 import gift.exception.ProductNotExistException;
 import gift.repository.ProductRepository;
+import gift.util.PagingUtils;
 import jakarta.transaction.Transactional;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -59,13 +58,8 @@ public class ProductService {
     }
 
     public List<ProductResponseDto> getAllProducts(int page, int size, String sort) {
-        String[] sortParts = sort.split(",");
-        String sortField = sortParts[0];
-        String sortDir = sortParts[1];
-        page = Math.max(1, page);
 
-        Sort.Direction direction = sortDir.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
-        Pageable pageable = PageRequest.of(page - 1, size, Sort.by(direction, sortField));
+        Pageable pageable = PagingUtils.createPageable(page, size, sort);
 
         return productRepository.findAll(pageable)
                 .stream()

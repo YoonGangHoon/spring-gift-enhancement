@@ -13,9 +13,8 @@ import gift.exception.WishNotExistException;
 import gift.repository.MemberRepository;
 import gift.repository.ProductRepository;
 import gift.repository.WishRepository;
-import org.springframework.data.domain.PageRequest;
+import gift.util.PagingUtils;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -37,13 +36,8 @@ public class WishService {
     }
 
     public List<WishResponseDto> getWishlist(Long memberId, int page, int size, String sort) {
-        String[] sortParts = sort.split(",");
-        String sortField = sortParts[0];
-        String sortDir = sortParts[1];
-        page = Math.max(1, page);
 
-        Sort.Direction direction = sortDir.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
-        Pageable pageable = PageRequest.of(page - 1, size, Sort.by(direction, sortField));
+        Pageable pageable = PagingUtils.createPageable(page, size, sort);
 
         List<Wish> wishes = wishRepository.findAllByMemberId(memberId, pageable);
 
