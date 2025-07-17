@@ -22,8 +22,12 @@ public class WishController {
     }
 
     @GetMapping
-    public ResponseEntity<List<WishResponseDto>> getWishlist(@LoginMember Member member) {
-        List<WishResponseDto> wishlist = wishlistService.getWishlist(member.getId());
+    public ResponseEntity<List<WishResponseDto>> getWishlist(
+                @LoginMember Member member,
+                @RequestParam(defaultValue = "0") int page,
+                @RequestParam(defaultValue = "10") int size,
+                @RequestParam(defaultValue = "id,asc") String sort) {
+        List<WishResponseDto> wishlist = wishlistService.getWishlist(member.getId(), page, size, sort);
         return ResponseEntity.ok(wishlist);
     }
 
