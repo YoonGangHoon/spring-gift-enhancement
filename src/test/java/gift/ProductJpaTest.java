@@ -2,10 +2,13 @@ package gift;
 
 import gift.entity.Product;
 import gift.repository.ProductRepository;
+import gift.util.PagingUtils;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -20,19 +23,25 @@ public class ProductJpaTest {
 
     @Test
     void 상품_저장_및_조회_성공() {
+        // given
         Product product = new Product("아이스 아메리카노", 4500, "ice_americano.jpg");
         productRepository.save(product);
 
+        // when
         Product found = productRepository.findById(product.getId()).orElseThrow();
+
+        // then
         assertThat(found.getName()).isEqualTo("아이스 아메리카노");
         assertThat(found.getPrice()).isEqualTo(4500);
     }
 
     @Test
     void 상품_가격_수정_성공() {
+        // given
         Product product = new Product("아이스 아메리카노", 4500, "ice_americano.jpg");
         productRepository.save(product);
 
+        // when
         Product found = productRepository.findById(product.getId()).orElseThrow();
         found.renameTo("아이스 아메리카노");
         found.changePrice(4000);
@@ -42,6 +51,23 @@ public class ProductJpaTest {
         entityManager.clear();
 
         Product updated = productRepository.findById(product.getId()).orElseThrow();
+
+        // then
         assertThat(updated.getPrice()).isEqualTo(4000);
+    }
+
+    @Test
+    void 상품_페이지_조회_성공() {
+        // given
+        this.entityManager.persist(new Product("아이스 아메리카노", 4500, "ice_americano.jpg"));
+        this.entityManager.persist(new Product("아이스 카페라떼", 5000, "ice_cafe_latte.jpg"));
+        this.entityManager.persist(new Product("아인슈페너", 5500, "einspanner.jpg"));
+
+        // when
+        Pageable pageable = PagingUtils.createPageable(1, 2, "id");
+        Page<Product> productsPage = productRepository.findAll(pageable);
+
+        // then
+        assertThat(productsPage.getSize()).isEqualTo(2);
     }
 }
