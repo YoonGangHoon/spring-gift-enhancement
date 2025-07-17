@@ -24,7 +24,7 @@ public class ProductViewController {
     @GetMapping
     public ModelAndView list() {
         Map<String, Object> model = new HashMap<>();
-        model.put("products", productService.findAll(0, 100, "id, asc"));
+        model.put("products", productService.getAllProducts(0, 100, "id, asc"));
         return new ModelAndView("product/list", model);
     }
 
