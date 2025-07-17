@@ -62,7 +62,7 @@ public class ProductService {
         String[] sortParts = sort.split(",");
         String sortField = sortParts[0];
         String sortDir = sortParts[1];
-        page = Math.max(1, page - 1);
+        page = Math.max(1, page);
 
         Sort.Direction direction = sortDir.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
         Pageable pageable = PageRequest.of(page - 1, size, Sort.by(direction, sortField));
