@@ -58,7 +58,7 @@ public class ProductService {
         productRepository.delete(product);
     }
 
-    public List<ProductResponseDto> findAll(int page, int size, String sort) {
+    public List<ProductResponseDto> getAllProducts(int page, int size, String sort) {
         String[] sortParts = sort.split(",");
         String sortField = sortParts[0];
         String sortDir = sortParts[1];

@@ -66,7 +66,7 @@ public class ProductController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id,asc") String sort
     ) {
-        List<ProductResponseDto> responseDtoList = productService.findAll(page, size, sort);
+        List<ProductResponseDto> responseDtoList = productService.getAllProducts(page, size, sort);
         return ResponseEntity.ok(responseDtoList);
     }
 }
