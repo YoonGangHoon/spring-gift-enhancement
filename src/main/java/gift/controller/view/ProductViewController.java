@@ -3,6 +3,9 @@ package gift.controller.view;
 import gift.dto.ProductRequestDto;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -22,9 +25,11 @@ public class ProductViewController {
     }
 
     @GetMapping
-    public ModelAndView list() {
+    public ModelAndView list(
+            @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
         Map<String, Object> model = new HashMap<>();
-        model.put("products", productService.findAll(0, 100, "id, asc"));
+        model.put("products", productService.getAllProducts(pageable));
         return new ModelAndView("product/list", model);
     }
 

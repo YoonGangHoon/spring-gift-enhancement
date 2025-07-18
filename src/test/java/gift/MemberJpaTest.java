@@ -19,11 +19,12 @@ public class MemberJpaTest {
     private TestEntityManager entityManager;
 
     @Autowired
-    MemberRepository memberRepository;
+    private MemberRepository memberRepository;
 
     @Test
     void 회원_저장_및_조회_성공() {
-        entityManager.persist(new Member("홍길동", "hong@naver.com", "password"));
+        Member newMember = new Member("홍길동", "hong@naver.com", "password");
+        memberRepository.save(newMember);
 
         Member found = memberRepository.findByEmail("hong@naver.com").orElseThrow();
         assertThat(found.getName()).isEqualTo("홍길동");
@@ -40,14 +41,10 @@ public class MemberJpaTest {
     void 회원_수정() {
         Member member = new Member("홍길동", "hong@naver.com", "password");
         entityManager.persist(member);
-        entityManager.flush();
-        entityManager.clear();
 
         Member found = memberRepository.findByEmail("hong@naver.com").orElseThrow();
-        found.update("윤강훈", "yghun021007@naver.com", "password");
-
-        entityManager.flush();
-        entityManager.clear();
+        Member updatedMember = found.updateTo("윤강훈", "yghun021007@naver.com", "password");
+        memberRepository.save(updatedMember);
 
         Member updated = memberRepository.findByEmail("yghun021007@naver.com").orElseThrow();
         assertThat(updated.getName()).isEqualTo("윤강훈");
@@ -57,10 +54,10 @@ public class MemberJpaTest {
     void 회원_삭제() {
         Member member = new Member("홍길동", "hong@naver.com", "password");
         entityManager.persist(member);
-
-        memberRepository.delete(member);
         entityManager.flush();
         entityManager.clear();
+
+        memberRepository.delete(member);
 
         Optional<Member> result = memberRepository.findByEmail("hong@naver.com");
         assertThat(result).isEmpty();

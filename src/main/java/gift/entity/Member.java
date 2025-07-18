@@ -22,13 +22,7 @@ public class Member {
     @Column(nullable = false)
     private Role role;
 
-    public Member(Long id, String name, String email, String password, Role role) {
-        this.id = id;
-        this.name = name;
-        this.email = email;
-        this.password = password;
-        this.role = role;
-    }
+    protected Member(){}
 
     public Member(String name, String email, String password) {
         this.name = name;
@@ -37,7 +31,13 @@ public class Member {
         this.role = Role.USER;
     }
 
-    public Member(){}
+    public Member(Long id, String name, String email, String password, Role role) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+    }
 
     public Long getId() {
         return id;
@@ -59,9 +59,7 @@ public class Member {
         return role;
     }
 
-    public void update(String name, String email, String password) {
-        this.name = name;
-        this.email = email;
-        this.password = password;
+    public Member updateTo(String name, String email, String password) {
+        return new Member(this.id, name, email, password, this.role);
     }
 }

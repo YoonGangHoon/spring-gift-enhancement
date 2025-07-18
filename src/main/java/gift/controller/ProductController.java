@@ -4,6 +4,9 @@ import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -62,11 +65,9 @@ public class ProductController {
 
     @GetMapping
     public ResponseEntity<List<ProductResponseDto>> getProducts(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "id,asc") String sort
+            @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable
     ) {
-        List<ProductResponseDto> responseDtoList = productService.findAll(page, size, sort);
+        List<ProductResponseDto> responseDtoList = productService.getAllProducts(pageable);
         return ResponseEntity.ok(responseDtoList);
     }
 }

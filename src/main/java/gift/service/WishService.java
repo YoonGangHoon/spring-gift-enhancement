@@ -13,6 +13,7 @@ import gift.exception.WishNotExistException;
 import gift.repository.MemberRepository;
 import gift.repository.ProductRepository;
 import gift.repository.WishRepository;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,8 +34,9 @@ public class WishService {
         this.memberRepository = memberRepository;
     }
 
-    public List<WishResponseDto> getWishlist(Long memberId) {
-        List<Wish> wishes = wishRepository.findByMemberId(memberId);
+    public List<WishResponseDto> getWishlist(Long memberId, Pageable pageable) {
+
+        List<Wish> wishes = wishRepository.findAllByMemberId(memberId, pageable);
 
         return wishes.stream()
                 .map(wish -> {

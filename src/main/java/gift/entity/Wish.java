@@ -9,15 +9,15 @@ public class Wish {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "memberId")
     private Member member;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "productId")
     private Product product;
 
-    public Wish() {};
+    protected Wish() {};
 
     public Wish(Member member, Product product) {
         this.member = member;

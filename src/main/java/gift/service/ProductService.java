@@ -6,9 +6,7 @@ import gift.entity.Product;
 import gift.exception.ProductNotExistException;
 import gift.repository.ProductRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -40,13 +38,14 @@ public class ProductService {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ProductNotExistException(productId));
 
-        product.update(requestDto.name(), requestDto.price(), requestDto.imageUrl());
+        Product updatedProduct = product.updateTo(requestDto.name(),  requestDto.price(), requestDto.imageUrl());
+        productRepository.save(updatedProduct);
 
         return new ProductResponseDto(
-                product.getId(),
-                product.getName(),
-                product.getPrice(),
-                product.getImageUrl()
+                updatedProduct.getId(),
+                updatedProduct.getName(),
+                updatedProduct.getPrice(),
+                updatedProduct.getImageUrl()
         );
     }
 
@@ -56,14 +55,7 @@ public class ProductService {
         productRepository.delete(product);
     }
 
-    public List<ProductResponseDto> findAll(int page, int size, String sort) {
-        String[] sortParts = sort.split(",");
-        String sortField = sortParts[0];
-        String sortDir = sortParts[1];
-        page = Math.max(1, page - 1);
-
-        Sort.Direction direction = sortDir.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
-        Pageable pageable = PageRequest.of(page - 1, size, Sort.by(direction, sortField));
+    public List<ProductResponseDto> getAllProducts(Pageable pageable) {
 
         return productRepository.findAll(pageable)
                 .stream()
