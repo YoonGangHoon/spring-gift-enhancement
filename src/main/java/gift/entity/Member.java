@@ -37,7 +37,7 @@ public class Member {
         this.role = Role.USER;
     }
 
-    public Member(){}
+    protected Member(){}
 
     public Long getId() {
         return id;
