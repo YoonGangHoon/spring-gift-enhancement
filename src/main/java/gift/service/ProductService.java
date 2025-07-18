@@ -5,7 +5,6 @@ import gift.dto.ProductResponseDto;
 import gift.entity.Product;
 import gift.exception.ProductNotExistException;
 import gift.repository.ProductRepository;
-import gift.util.PagingUtils;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -56,9 +55,7 @@ public class ProductService {
         productRepository.delete(product);
     }
 
-    public List<ProductResponseDto> getAllProducts(int page, int size, String sort) {
-
-        Pageable pageable = PagingUtils.createPageable(page, size, sort);
+    public List<ProductResponseDto> getAllProducts(Pageable pageable) {
 
         return productRepository.findAll(pageable)
                 .stream()

@@ -6,6 +6,9 @@ import gift.dto.WishRequestDto;
 import gift.dto.WishResponseDto;
 import gift.entity.Member;
 import gift.service.WishService;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,10 +27,8 @@ public class WishController {
     @GetMapping
     public ResponseEntity<List<WishResponseDto>> getWishlist(
                 @LoginMember Member member,
-                @RequestParam(defaultValue = "0") int page,
-                @RequestParam(defaultValue = "10") int size,
-                @RequestParam(defaultValue = "id,asc") String sort) {
-        List<WishResponseDto> wishlist = wishlistService.getWishlist(member.getId(), page, size, sort);
+                @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
+        List<WishResponseDto> wishlist = wishlistService.getWishlist(member.getId(), pageable);
         return ResponseEntity.ok(wishlist);
     }
 
