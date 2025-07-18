@@ -39,15 +39,14 @@ public class ProductService {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ProductNotExistException(productId));
 
-        product.renameTo(requestDto.name());
-        product.changePrice(requestDto.price());
-        product.changeImage(requestDto.imageUrl());
+        Product updatedProduct = product.updateTo(requestDto.name(),  requestDto.price(), requestDto.imageUrl());
+        productRepository.save(updatedProduct);
 
         return new ProductResponseDto(
-                product.getId(),
-                product.getName(),
-                product.getPrice(),
-                product.getImageUrl()
+                updatedProduct.getId(),
+                updatedProduct.getName(),
+                updatedProduct.getPrice(),
+                updatedProduct.getImageUrl()
         );
     }
 

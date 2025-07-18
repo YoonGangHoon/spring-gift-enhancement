@@ -18,13 +18,21 @@ public class Product {
     @Column(nullable = false)
     private String imageUrl;
 
+    protected Product() {}
+
     public Product(String name, Integer price, String imageUrl) {
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
     }
 
-    protected Product() {}
+    public Product(Long id, String name, Integer price, String imageUrl) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.imageUrl = imageUrl;
+    }
+
 
     public Long getId() {
         return id;
@@ -42,15 +50,7 @@ public class Product {
         return imageUrl;
     }
 
-    public void changePrice(int newPrice) {
-        this.price = newPrice;
-    }
-
-    public void renameTo(String newName) {
-        this.name = newName;
-    }
-
-    public void changeImage(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public Product updateTo(String newName, Integer newPrice, String newImageUrl) {
+        return new Product(this.id, newName, newPrice, newImageUrl);
     }
 }

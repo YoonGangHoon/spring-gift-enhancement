@@ -39,13 +39,14 @@ public class ProductJpaTest {
     void 상품_가격_수정_성공() {
         // given
         Product product = new Product("아이스 아메리카노", 4500, "ice_americano.jpg");
-        productRepository.save(product);
+        entityManager.persist(product);
+        entityManager.flush();
+        entityManager.clear();
 
         // when
         Product found = productRepository.findById(product.getId()).orElseThrow();
-        found.renameTo("아이스 아메리카노");
-        found.changePrice(4000);
-        found.changeImage("ice_americano.jpg");
+        Product updatedProduct = found.updateTo("아이스 아메리카노", 4000, "ice_americano.jpg");
+        productRepository.save(updatedProduct);
 
         entityManager.flush();
         entityManager.clear();
@@ -53,6 +54,7 @@ public class ProductJpaTest {
         Product updated = productRepository.findById(product.getId()).orElseThrow();
 
         // then
+        assertThat(updated.getId()).isEqualTo(updatedProduct.getId());
         assertThat(updated.getPrice()).isEqualTo(4000);
     }
 
