@@ -105,4 +105,13 @@ public class ProductController {
         List<OptionResponseDto> options = optionService.find(productId);
         return ResponseEntity.ok(options);
     }
+
+    @DeleteMapping("/{productId}/options/{optionId}")
+    public ResponseEntity<Void> deleteOption(
+            @PathVariable Long productId,
+            @PathVariable Long optionId
+    ){
+        optionService.delete(productId, optionId);
+        return ResponseEntity.noContent().build();
+    }
 }

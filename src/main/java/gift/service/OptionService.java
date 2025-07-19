@@ -7,7 +7,6 @@ import gift.entity.Product;
 import gift.exception.ProductNotExistException;
 import gift.repository.OptionRepository;
 import gift.repository.ProductRepository;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -44,5 +43,9 @@ public class OptionService {
                         option.getName(),
                         option.getQuantity()))
                 .collect(Collectors.toList());
+    }
+
+    public void delete(Long productId, Long optionId) {
+        optionRepository.deleteById(optionId);
     }
 }
