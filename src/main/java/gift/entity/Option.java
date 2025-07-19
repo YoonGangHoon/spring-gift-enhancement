@@ -18,10 +18,28 @@ public class Option {
     @Column(nullable = false)
     private Integer quantity;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "productId")
+    private Product product;
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
     protected Option() {}
 
-    public Option(String name, Integer quantity) {
+    public Option(String name, Integer quantity,  Product product) {
         this.name = name;
         this.quantity = quantity;
+        this.product = product;
     }
+
 }
