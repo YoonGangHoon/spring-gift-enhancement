@@ -7,7 +7,11 @@ import gift.entity.Product;
 import gift.exception.ProductNotExistException;
 import gift.repository.OptionRepository;
 import gift.repository.ProductRepository;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class OptionService {
@@ -25,7 +29,20 @@ public class OptionService {
 
         Option option = new Option(requestDto.name(), requestDto.quantity(), product);
         Option newOption = optionRepository.save(option);
-        
+
         return new OptionResponseDto(newOption.getId(), newOption.getName(), newOption.getQuantity());
+    }
+
+    public List<OptionResponseDto> find(Long productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ProductNotExistException(productId));
+
+        List<Option> options = optionRepository.findAllByProduct(product);
+        return options.stream()
+                .map(option -> new OptionResponseDto(
+                        option.getId(),
+                        option.getName(),
+                        option.getQuantity()))
+                .collect(Collectors.toList());
     }
 }

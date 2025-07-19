@@ -81,7 +81,7 @@ public class ProductController {
     // 상품 옵션 관련 API
     @PostMapping("/{productId}/options")
     public ResponseEntity<OptionResponseDto> createOption(
-            @PathVariable("productId") Long productId,
+            @PathVariable Long productId,
             @Valid @RequestBody OptionRequestDto requestDto
     ) {
         if (requestDto == null) {
@@ -96,5 +96,13 @@ public class ProductController {
                 .toUri(); // location 생성
 
         return ResponseEntity.created(location).body(responseDto);
+    }
+
+    @GetMapping("/{productId}/options")
+    public ResponseEntity<List<OptionResponseDto>> getOptions(
+            @PathVariable Long productId
+    ){
+        List<OptionResponseDto> options = optionService.find(productId);
+        return ResponseEntity.ok(options);
     }
 }
