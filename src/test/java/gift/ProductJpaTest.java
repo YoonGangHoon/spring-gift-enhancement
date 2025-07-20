@@ -11,6 +11,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
@@ -67,10 +69,12 @@ public class ProductJpaTest {
         this.entityManager.persist(new Product("아인슈페너", 5500, "einspanner.jpg"));
 
         // when
-        Pageable pageable = PageRequest.of(1, 2, Sort.by("id"));
+        Pageable pageable = PageRequest.of(0, 2, Sort.by("id"));
         Page<Product> productsPage = productRepository.findAll(pageable);
+        List<Product> found = productRepository.findAll(pageable).getContent();
 
         // then
+        assertThat(found).hasSize(2);
         assertThat(productsPage.getSize()).isEqualTo(2);
     }
 }
