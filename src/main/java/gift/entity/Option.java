@@ -53,4 +53,14 @@ public class Option {
         return new Option(this.id, name, quantity, this.product);
     }
 
+    public void decreaseQuantity(int amount) {
+        if (amount < 1) {
+            throw new IllegalArgumentException("차감 수량은 1 이상이어야 합니다.");
+        }
+        if (this.quantity < amount) {
+            throw new IllegalStateException("수량은 음수가 될 수 없습니다.");
+        }
+        this.quantity -= amount;
+    }
+
 }

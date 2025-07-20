@@ -65,5 +65,10 @@ public class OptionService {
         optionRepository.deleteById(optionId);
     }
 
+    @Transactional
+    public void reduceOptionQuantity(Long optionId, int amount) {
+        Option option = optionRepository.findById(optionId).get();
+        option.decreaseQuantity(amount);
+    }
 
 }
