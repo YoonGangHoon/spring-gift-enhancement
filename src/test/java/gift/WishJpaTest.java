@@ -47,7 +47,7 @@ public class WishJpaTest {
         entityManager.clear();
 
         // when
-        Pageable pageable = PageRequest.of(1, 2, Sort.by("id"));
+        Pageable pageable = PageRequest.of(0, 2, Sort.by("id"));
         List<Wish> found = wishRepository.findAllByMemberId(member.getId(), pageable);
 
         // then
