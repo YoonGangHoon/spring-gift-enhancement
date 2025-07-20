@@ -4,6 +4,7 @@ import gift.dto.OptionRequestDto;
 import gift.dto.OptionResponseDto;
 import gift.entity.Option;
 import gift.entity.Product;
+import gift.exception.DuplicateOptionNameException;
 import gift.exception.ProductNotExistException;
 import gift.repository.OptionRepository;
 import gift.repository.ProductRepository;
@@ -26,6 +27,10 @@ public class OptionService {
     public OptionResponseDto create(Long productId, OptionRequestDto requestDto) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ProductNotExistException(productId));
+
+        if (optionRepository.existsByProductAndName(product, requestDto.name())){
+            throw new DuplicateOptionNameException(requestDto.name());
+        }
 
         Option option = new Option(requestDto.name(), requestDto.quantity(), product);
         Option newOption = optionRepository.save(option);
