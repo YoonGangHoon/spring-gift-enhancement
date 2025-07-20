@@ -90,4 +90,11 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorResponse(ex.getMessage()));
     }
+
+    @ExceptionHandler(OptionNotExistException.class)
+    public ResponseEntity<ErrorResponse> handleOptionNotExist(OptionNotExistException ex) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse(ex.getMessage()));
+    }
 }

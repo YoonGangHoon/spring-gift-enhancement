@@ -5,6 +5,7 @@ import gift.dto.OptionResponseDto;
 import gift.entity.Option;
 import gift.entity.Product;
 import gift.exception.DuplicateOptionNameException;
+import gift.exception.OptionNotExistException;
 import gift.exception.ProductNotExistException;
 import gift.repository.OptionRepository;
 import gift.repository.ProductRepository;
@@ -53,10 +54,19 @@ public class OptionService {
 
     @Transactional
     public OptionResponseDto update(Long productId, Long optionId, OptionRequestDto requestDto) {
+
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ProductNotExistException(productId));
 
-        Option option = optionRepository.findById(optionId).get();
+        Option option = optionRepository.findById(optionId)
+                .orElseThrow(() -> new OptionNotExistException(optionId));
+
+        if (!option.getName().equals(requestDto.name())) {
+            if (optionRepository.existsByProductAndName(product, requestDto.name())){
+                throw new DuplicateOptionNameException(requestDto.name());
+            }
+        }
+
         Option updatedOption = option.updateTo(requestDto.name(), requestDto.quantity());
 
         return new OptionResponseDto(
@@ -67,12 +77,19 @@ public class OptionService {
     }
 
     public void delete(Long productId, Long optionId) {
+        if (!productRepository.existsById(productId)) {
+            throw new ProductNotExistException(productId);
+        }
+        if (!optionRepository.existsById(optionId)) {
+            throw new OptionNotExistException(optionId);
+        }
         optionRepository.deleteById(optionId);
     }
 
     @Transactional
     public void reduceOptionQuantity(Long optionId, int amount) {
-        Option option = optionRepository.findById(optionId).get();
+        Option option = optionRepository.findById(optionId)
+                .orElseThrow(() -> new OptionNotExistException(optionId));
         option.decreaseQuantity(amount);
     }
 
