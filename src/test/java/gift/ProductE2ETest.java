@@ -135,28 +135,4 @@ class ProductE2ETest {
         assertThat(responseBody).contains("카카오");
         assertThat(responseBody).contains("100원");
     }
-
-    private String 회원가입_후_토큰_발급() {
-        String name = "홍길동";
-        String email = "hong" + System.currentTimeMillis() + "@email.com";
-        String password = "password";
-
-        MemberRequestDto joinRequest = new MemberRequestDto(name, email, password);
-
-        restClient.post()
-                .uri("/api/members/register")
-                .body(joinRequest)
-                .retrieve()
-                .toBodilessEntity();
-
-        MemberLoginRequestDto loginRequest = new MemberLoginRequestDto(email, password);
-
-        MemberLoginResponseDto loginResponse = restClient.post()
-                .uri("/api/members/login")
-                .body(loginRequest)
-                .retrieve()
-                .body(MemberLoginResponseDto.class);
-
-        return loginResponse.token();
-    }
 }
