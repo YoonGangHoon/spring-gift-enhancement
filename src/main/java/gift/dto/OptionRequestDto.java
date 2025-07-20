@@ -1,12 +1,14 @@
 package gift.dto;
 
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 
 public record OptionRequestDto(
         @NotBlank(message = "옵션명은 필수 입력값입니다.")
+        @Size(max = 50, message = "옵션명은 50자 이하로 입력해주세요.")
+        @Pattern(
+                regexp = "^[a-zA-Z0-9가-힣()\\[\\]+\\-\\&/_\\s]*$",
+                message = "특수문자는 ()[]+-&/_ 만 사용할 수 있어요."
+        )
         String name,
 
         @NotNull(message = "가격은 필수 입력값입니다.")
