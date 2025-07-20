@@ -68,6 +68,7 @@ public class OptionService {
         }
 
         Option updatedOption = option.updateTo(requestDto.name(), requestDto.quantity());
+        optionRepository.save(updatedOption);
 
         return new OptionResponseDto(
                 updatedOption.getId(),
