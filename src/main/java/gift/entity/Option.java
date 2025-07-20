@@ -42,4 +42,15 @@ public class Option {
         this.product = product;
     }
 
+    public Option(Long id, String name, Integer quantity, Product product) {
+        this.id = id;
+        this.name = name;
+        this.quantity = quantity;
+        this.product = product;
+    }
+
+    public Option updateTo(String name, Integer quantity) {
+        return new Option(this.id, name, quantity, this.product);
+    }
+
 }

@@ -8,6 +8,7 @@ import gift.exception.ProductNotExistException;
 import gift.repository.OptionRepository;
 import gift.repository.ProductRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -45,7 +46,24 @@ public class OptionService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
+    public OptionResponseDto update(Long productId, Long optionId, OptionRequestDto requestDto) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ProductNotExistException(productId));
+
+        Option option = optionRepository.findById(optionId).get();
+        Option updatedOption = option.updateTo(requestDto.name(), requestDto.quantity());
+
+        return new OptionResponseDto(
+                updatedOption.getId(),
+                updatedOption.getName(),
+                updatedOption.getQuantity()
+        );
+    }
+
     public void delete(Long productId, Long optionId) {
         optionRepository.deleteById(optionId);
     }
+
+
 }

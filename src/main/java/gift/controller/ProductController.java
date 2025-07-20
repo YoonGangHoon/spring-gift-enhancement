@@ -106,6 +106,18 @@ public class ProductController {
         return ResponseEntity.ok(options);
     }
 
+    @PutMapping("/{productId}/options/{optionId}")
+    public ResponseEntity<OptionResponseDto> updateOption(
+            @PathVariable Long productId,
+            @PathVariable Long optionId,
+            @Valid @RequestBody OptionRequestDto requestDto
+    ){
+        if (requestDto == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(optionService.update(productId, optionId, requestDto));
+    }
+
     @DeleteMapping("/{productId}/options/{optionId}")
     public ResponseEntity<Void> deleteOption(
             @PathVariable Long productId,
