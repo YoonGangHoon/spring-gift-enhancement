@@ -39,7 +39,8 @@ public class OptionE2ETest {
         token = new E2ETestUtils(restClient).회원가입_후_토큰_발급();
 
         List<OptionRequestDto> options = of(
-                new OptionRequestDto("테스트 옵션", 100)
+                new OptionRequestDto("테스트 옵션1", 100),
+                new OptionRequestDto("태스트 옵션2", 100)
         );
         ProductRequestDto productRequest = new ProductRequestDto("테스트 상품", 5000, "test.jpg", options);
 
@@ -69,7 +70,7 @@ public class OptionE2ETest {
                 .body(OptionResponseDto[].class);
 
         assertThat(response).isNotEmpty();
-        OptionResponseDto option = response[response.length - 1];
+        OptionResponseDto option = response[response.length-1];
 
         assertThat(option.name()).isEqualTo("옵션1");
         assertThat(option.quantity()).isEqualTo(100);
@@ -93,7 +94,7 @@ public class OptionE2ETest {
                 .body(OptionResponseDto[].class);
 
         assertThat(response).isNotEmpty();
-        OptionResponseDto option = response[response.length - 1];
+        OptionResponseDto option = response[0];
         assertThat(option.name()).isEqualTo("수정된 옵션");
         assertThat(option.quantity()).isEqualTo(1000);
     }
@@ -112,7 +113,7 @@ public class OptionE2ETest {
                 .retrieve()
                 .body(OptionResponseDto[].class);
 
-        assertThat(response).isEmpty();
+        assertThat(response.length).isEqualTo(1);
     }
 
     @Test
@@ -139,7 +140,7 @@ public class OptionE2ETest {
 
     @Test
     void 옵션명_중복_검사() {
-        OptionRequestDto invalidRequest = new OptionRequestDto("테스트 옵션", 100);
+        OptionRequestDto invalidRequest = new OptionRequestDto("테스트 옵션1", 100);
 
         HttpClientErrorException exception = assertThrows(HttpClientErrorException.class, () -> {
             restClient.post()
