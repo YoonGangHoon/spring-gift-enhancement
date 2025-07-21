@@ -9,6 +9,7 @@ import gift.exception.OptionNotExistException;
 import gift.exception.ProductNotExistException;
 import gift.repository.OptionRepository;
 import gift.repository.ProductRepository;
+import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,30 +21,36 @@ public class OptionService {
 
     private final ProductRepository productRepository;
     private final OptionRepository optionRepository;
-    public OptionService(ProductRepository productRepository, OptionRepository optionRepository) {
+    private final EntityManager entityManager;
+
+    public OptionService(
+            ProductRepository productRepository,
+            OptionRepository optionRepository,
+            EntityManager entityManager) {
         this.productRepository = productRepository;
         this.optionRepository = optionRepository;
+        this.entityManager = entityManager;
     }
 
     public OptionResponseDto create(Long productId, OptionRequestDto requestDto) {
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new ProductNotExistException(productId));
-
-        if (optionRepository.existsByProductAndName(product, requestDto.name())){
+        if (optionRepository.existsByProductIdAndName(productId, requestDto.name())) {
             throw new DuplicateOptionNameException(requestDto.name());
         }
 
-        Option option = new Option(requestDto.name(), requestDto.quantity(), product);
-        Option newOption = optionRepository.save(option);
+        Product productReference = entityManager.getReference(Product.class, productId);
 
-        return new OptionResponseDto(newOption.getId(), newOption.getName(), newOption.getQuantity());
+        Option option = new Option(requestDto.name(), requestDto.quantity(), productReference); // DB 조회 없이 프록시 객체 반환
+        Option saved = optionRepository.save(option);
+
+        return new OptionResponseDto(saved.getId(), saved.getName(), saved.getQuantity());
     }
 
     public List<OptionResponseDto> find(Long productId) {
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new ProductNotExistException(productId));
+        if (!productRepository.existsById(productId)) {
+            throw new ProductNotExistException(productId);
+        }
 
-        List<Option> options = optionRepository.findAllByProduct(product);
+        List<Option> options = optionRepository.findAllByProductId(productId);
         return options.stream()
                 .map(option -> new OptionResponseDto(
                         option.getId(),
