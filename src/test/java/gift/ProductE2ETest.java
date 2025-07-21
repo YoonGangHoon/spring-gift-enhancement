@@ -1,6 +1,8 @@
 package gift;
 
-import gift.dto.*;
+import gift.dto.OptionRequestDto;
+import gift.dto.ProductRequestDto;
+import gift.dto.ProductResponseDto;
 import gift.utils.E2ETestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,6 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 
+import java.util.List;
+
+import static java.util.List.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -31,7 +36,10 @@ class ProductE2ETest {
 
         token = new E2ETestUtils(restClient).회원가입_후_토큰_발급();
 
-        ProductRequestDto request = new ProductRequestDto("테스트 상품", 5000, "test.jpg");
+        List<OptionRequestDto> options = of(
+                new OptionRequestDto("테스트 옵션", 100)
+        );
+        ProductRequestDto request = new ProductRequestDto("테스트 상품", 5000, "test.jpg", options);
 
         restClient.post()
                 .uri("/api/products")
@@ -51,7 +59,10 @@ class ProductE2ETest {
 
     @Test
     void 상품을_등록하고_조회() {
-        ProductRequestDto request = new ProductRequestDto("녹차", 3500, "green_tea.jpg");
+        List<OptionRequestDto> options = of(
+                new OptionRequestDto("테스트 옵션", 100)
+        );
+        ProductRequestDto request = new ProductRequestDto("녹차", 3500, "green_tea.jpg", options);
 
         restClient.post()
                 .uri("/api/products")
@@ -75,7 +86,10 @@ class ProductE2ETest {
 
     @Test
     void 상품을_수정하고_조회() {
-        ProductRequestDto request = new ProductRequestDto("아이스 카페라떼", 7000, "ice_cafe_latte.jpg");
+        List<OptionRequestDto> options = of(
+                new OptionRequestDto("테스트 옵션", 100)
+        );
+        ProductRequestDto request = new ProductRequestDto("아이스 카페라떼", 7000, "ice_cafe_latte.jpg", options);
 
         restClient.put()
                 .uri("/api/products/" + product.id())
@@ -116,7 +130,10 @@ class ProductE2ETest {
 
     @Test
     void 상품_등록_유효성_검사_실패() {
-        ProductRequestDto invalidRequest = new ProductRequestDto("@카카오@", 10, "kakao.jpg");
+        List<OptionRequestDto> options = of(
+                new OptionRequestDto("테스트 옵션", 100)
+        );
+        ProductRequestDto invalidRequest = new ProductRequestDto("@카카오@", 10, "kakao.jpg", options);
 
         HttpClientErrorException exception = assertThrows(HttpClientErrorException.class, () -> {
             restClient.post()

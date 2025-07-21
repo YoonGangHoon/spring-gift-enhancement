@@ -13,6 +13,7 @@ import org.springframework.web.client.RestClient;
 
 import java.util.List;
 
+import static java.util.List.of;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -38,7 +39,10 @@ public class WishE2ETest {
     void 위시리스트_추가_및_조회_삭제() {
 
         // 상품 등록
-        ProductRequestDto productRequest = new ProductRequestDto("아이스 아메리카노", 4500, "ice_americano.jpg");
+        List<OptionRequestDto> options = of(
+                new OptionRequestDto("테스트 옵션", 100)
+        );
+        ProductRequestDto productRequest = new ProductRequestDto("아이스 아메리카노", 4500, "ice_americano.jpg", options);
 
         ProductResponseDto productResponse = restClient.post()
                 .uri("/api/products")
@@ -133,7 +137,10 @@ public class WishE2ETest {
     @Test
     void 중복된_상품_위시_추가_시_실패() {
         // given
-        ProductRequestDto productRequest = new ProductRequestDto("카페라떼", 4800, "latte.jpg");
+        List<OptionRequestDto> options = of(
+                new OptionRequestDto("테스트 옵션", 100)
+        );
+        ProductRequestDto productRequest = new ProductRequestDto("카페라떼", 4800, "latte.jpg", options);
 
         ProductResponseDto product = restClient.post()
                 .uri("/api/products")

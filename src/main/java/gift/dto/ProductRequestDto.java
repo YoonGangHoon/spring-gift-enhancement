@@ -1,7 +1,10 @@
 package gift.dto;
 
 import gift.validation.ForbiddenWord;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
+
+import java.util.List;
 
 public record ProductRequestDto(
         @NotBlank(message = "상품명은 필수 입력값입니다.")
@@ -17,6 +20,8 @@ public record ProductRequestDto(
         @Min(value = 100, message = "가격은 100원 이상으로 등록해주세요.")
         Integer price,
 
-        String imageUrl
+        String imageUrl,
 
+        @NotEmpty(message = "옵션은 반드시 하나 이상 등록해야 합니다.")
+        List<@Valid OptionRequestDto> options
 ) {}

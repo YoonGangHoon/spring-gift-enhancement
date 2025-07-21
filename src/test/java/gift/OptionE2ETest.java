@@ -14,6 +14,9 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 
+import java.util.List;
+
+import static java.util.List.of;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -35,21 +38,15 @@ public class OptionE2ETest {
 
         token = new E2ETestUtils(restClient).회원가입_후_토큰_발급();
 
-        ProductRequestDto productRequest = new ProductRequestDto("테스트 상품", 5000, "test.jpg");
+        List<OptionRequestDto> options = of(
+                new OptionRequestDto("테스트 옵션", 100)
+        );
+        ProductRequestDto productRequest = new ProductRequestDto("테스트 상품", 5000, "test.jpg", options);
 
         restClient.post()
                 .uri("/api/products")
                 .header("Authorization", "Bearer " + token)
                 .body(productRequest)
-                .retrieve()
-                .toBodilessEntity();
-
-        OptionRequestDto optionRequest = new OptionRequestDto("테스트 옵션", 100);
-
-        restClient.post()
-                .uri("/api/products/1/options")
-                .header("Authorization", "Bearer " + token)
-                .body(optionRequest)
                 .retrieve()
                 .toBodilessEntity();
     }
