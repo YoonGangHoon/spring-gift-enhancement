@@ -30,12 +30,8 @@ public class ProductController {
     }
 
     // 상품 관련 API
-
     @PostMapping
     public ResponseEntity<ProductResponseDto> createProduct(@Valid @RequestBody ProductRequestDto requestDto) {
-        if (requestDto == null) {
-            return ResponseEntity.badRequest().build();
-        }
 
         ProductResponseDto responseDto = productService.create(requestDto);
 
@@ -44,7 +40,7 @@ public class ProductController {
                 .buildAndExpand(responseDto.id())
                 .toUri(); // location 생성
 
-        return ResponseEntity.created(location).body(responseDto); // 201 created 반환
+        return ResponseEntity.created(location).body(responseDto);
     }
 
     @GetMapping("/{productId}")
@@ -57,9 +53,6 @@ public class ProductController {
             @PathVariable("productId") Long productId,
             @Valid @RequestBody ProductRequestDto requestDto
     ) {
-        if (requestDto == null) {
-            return ResponseEntity.badRequest().build();
-        }
 
         return ResponseEntity.ok(productService.update(productId, requestDto));
     }
@@ -84,9 +77,6 @@ public class ProductController {
             @PathVariable Long productId,
             @Valid @RequestBody OptionRequestDto requestDto
     ) {
-        if (requestDto == null) {
-            return ResponseEntity.badRequest().build();
-        }
 
         OptionResponseDto responseDto = optionService.create(productId,requestDto);
 
@@ -112,9 +102,7 @@ public class ProductController {
             @PathVariable Long optionId,
             @Valid @RequestBody OptionRequestDto requestDto
     ){
-        if (requestDto == null) {
-            return ResponseEntity.badRequest().build();
-        }
+
         return ResponseEntity.ok(optionService.update(productId, optionId, requestDto));
     }
 
