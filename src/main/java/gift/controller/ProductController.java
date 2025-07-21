@@ -1,7 +1,10 @@
 package gift.controller;
 
+import gift.dto.OptionRequestDto;
+import gift.dto.OptionResponseDto;
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
+import gift.service.OptionService;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
@@ -19,16 +22,16 @@ import java.util.List;
 public class ProductController {
 
     private final ProductService productService;
+    private final OptionService optionService;
 
-    public ProductController(ProductService productService) {
+    public ProductController(ProductService productService,  OptionService optionService) {
         this.productService = productService;
+        this.optionService = optionService;
     }
 
+    // 상품 관련 API
     @PostMapping
     public ResponseEntity<ProductResponseDto> createProduct(@Valid @RequestBody ProductRequestDto requestDto) {
-        if (requestDto == null) {
-            return ResponseEntity.badRequest().build();
-        }
 
         ProductResponseDto responseDto = productService.create(requestDto);
 
@@ -37,7 +40,7 @@ public class ProductController {
                 .buildAndExpand(responseDto.id())
                 .toUri(); // location 생성
 
-        return ResponseEntity.created(location).body(responseDto); // 201 created 반환
+        return ResponseEntity.created(location).body(responseDto);
     }
 
     @GetMapping("/{productId}")
@@ -50,9 +53,6 @@ public class ProductController {
             @PathVariable("productId") Long productId,
             @Valid @RequestBody ProductRequestDto requestDto
     ) {
-        if (requestDto == null) {
-            return ResponseEntity.badRequest().build();
-        }
 
         return ResponseEntity.ok(productService.update(productId, requestDto));
     }
@@ -69,5 +69,49 @@ public class ProductController {
     ) {
         List<ProductResponseDto> responseDtoList = productService.getAllProducts(pageable);
         return ResponseEntity.ok(responseDtoList);
+    }
+
+    // 상품 옵션 관련 API
+    @PostMapping("/{productId}/options")
+    public ResponseEntity<OptionResponseDto> createOption(
+            @PathVariable Long productId,
+            @Valid @RequestBody OptionRequestDto requestDto
+    ) {
+
+        OptionResponseDto responseDto = optionService.create(productId,requestDto);
+
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(responseDto.id())
+                .toUri();
+
+        return ResponseEntity.created(location).body(responseDto);
+    }
+
+    @GetMapping("/{productId}/options")
+    public ResponseEntity<List<OptionResponseDto>> getOptions(
+            @PathVariable Long productId
+    ){
+        List<OptionResponseDto> options = optionService.find(productId);
+        return ResponseEntity.ok(options);
+    }
+
+    @PutMapping("/{productId}/options/{optionId}")
+    public ResponseEntity<OptionResponseDto> updateOption(
+            @PathVariable Long productId,
+            @PathVariable Long optionId,
+            @Valid @RequestBody OptionRequestDto requestDto
+    ){
+
+        return ResponseEntity.ok(optionService.update(productId, optionId, requestDto));
+    }
+
+    @DeleteMapping("/{productId}/options/{optionId}")
+    public ResponseEntity<Void> deleteOption(
+            @PathVariable Long productId,
+            @PathVariable Long optionId
+    ){
+        optionService.delete(productId, optionId);
+        return ResponseEntity.noContent().build();
     }
 }

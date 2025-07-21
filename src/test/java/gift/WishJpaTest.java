@@ -4,12 +4,13 @@ import gift.entity.Member;
 import gift.entity.Product;
 import gift.entity.Wish;
 import gift.repository.WishRepository;
-import gift.util.PagingUtils;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 
@@ -46,7 +47,7 @@ public class WishJpaTest {
         entityManager.clear();
 
         // when
-        Pageable pageable = PagingUtils.createPageable(1, 2, "id");
+        Pageable pageable = PageRequest.of(0, 2, Sort.by("id"));
         List<Wish> found = wishRepository.findAllByMemberId(member.getId(), pageable);
 
         // then

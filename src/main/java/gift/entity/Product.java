@@ -2,6 +2,9 @@ package gift.entity;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 public class Product {
 
@@ -17,6 +20,9 @@ public class Product {
 
     @Column(nullable = false)
     private String imageUrl;
+
+    @OneToMany(mappedBy = "product")
+    private List<Option> options = new ArrayList<>();
 
     protected Product() {}
 

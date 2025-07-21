@@ -2,28 +2,39 @@ package gift.service;
 
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
+import gift.entity.Option;
 import gift.entity.Product;
 import gift.exception.ProductNotExistException;
+import gift.repository.OptionRepository;
 import gift.repository.ProductRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class ProductService {
     private final ProductRepository productRepository;
+    private final OptionRepository optionRepository;
 
-    public ProductService(ProductRepository productRepository) {
+    public ProductService(ProductRepository productRepository,  OptionRepository optionRepository) {
         this.productRepository = productRepository;
+        this.optionRepository = optionRepository;
     }
 
+    @Transactional
     public ProductResponseDto create(ProductRequestDto requestDto) {
         Product product = new Product(requestDto.name(), requestDto.price(), requestDto.imageUrl());
         Product newProduct = productRepository.save(product);
 
-        return new ProductResponseDto(newProduct.getId(), newProduct.getName(), newProduct.getPrice(), newProduct.getImageUrl());
+        List<Option> options = requestDto.options().stream()
+                .map(optionDto -> new Option(optionDto.name(), optionDto.quantity(), newProduct))
+                .toList();
+        optionRepository.saveAll(options);
+
+        return new ProductResponseDto( newProduct.getId(), newProduct.getName(), newProduct.getPrice(), newProduct.getImageUrl());
     }
 
     public ProductResponseDto find(Long productId) {
@@ -49,9 +60,11 @@ public class ProductService {
         );
     }
 
+    @Transactional
     public void delete(Long productId) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ProductNotExistException(productId));
+        optionRepository.deleteAllByProduct(product);
         productRepository.delete(product);
     }
 

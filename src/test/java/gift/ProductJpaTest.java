@@ -2,13 +2,16 @@ package gift;
 
 import gift.entity.Product;
 import gift.repository.ProductRepository;
-import gift.util.PagingUtils;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -66,10 +69,12 @@ public class ProductJpaTest {
         this.entityManager.persist(new Product("아인슈페너", 5500, "einspanner.jpg"));
 
         // when
-        Pageable pageable = PagingUtils.createPageable(1, 2, "id");
+        Pageable pageable = PageRequest.of(0, 2, Sort.by("id"));
         Page<Product> productsPage = productRepository.findAll(pageable);
+        List<Product> found = productRepository.findAll(pageable).getContent();
 
         // then
+        assertThat(found).hasSize(2);
         assertThat(productsPage.getSize()).isEqualTo(2);
     }
 }

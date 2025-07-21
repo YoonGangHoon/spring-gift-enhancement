@@ -83,4 +83,25 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ErrorResponse(ex.getMessage()));
     }
+
+    @ExceptionHandler(DuplicateOptionNameException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicateOptionName(DuplicateOptionNameException ex) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(ex.getMessage()));
+    }
+
+    @ExceptionHandler(OptionNotExistException.class)
+    public ResponseEntity<ErrorResponse> handleOptionNotExist(OptionNotExistException ex) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse(ex.getMessage()));
+    }
+
+    @ExceptionHandler(LastOptionException.class)
+    public ResponseEntity<ErrorResponse> handleLastOption(LastOptionException ex) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(ex.getMessage()));
+    }
 }
