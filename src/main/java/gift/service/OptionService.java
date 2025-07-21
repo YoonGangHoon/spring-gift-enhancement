@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class OptionService {
 
     private final ProductRepository productRepository;
@@ -32,6 +33,7 @@ public class OptionService {
         this.entityManager = entityManager;
     }
 
+    @Transactional
     public OptionResponseDto create(Long productId, OptionRequestDto requestDto) {
         if (optionRepository.existsByProductIdAndName(productId, requestDto.name())) {
             throw new DuplicateOptionNameException(requestDto.name());
@@ -84,6 +86,7 @@ public class OptionService {
         );
     }
 
+    @Transactional
     public void delete(Long productId, Long optionId) {
         if (!productRepository.existsById(productId)) {
             throw new ProductNotExistException(productId);
