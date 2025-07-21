@@ -5,6 +5,7 @@ import gift.dto.OptionResponseDto;
 import gift.entity.Option;
 import gift.entity.Product;
 import gift.exception.DuplicateOptionNameException;
+import gift.exception.LastOptionException;
 import gift.exception.OptionNotExistException;
 import gift.exception.ProductNotExistException;
 import gift.repository.OptionRepository;
@@ -88,13 +89,14 @@ public class OptionService {
 
     @Transactional
     public void delete(Long productId, Long optionId) {
-        if (!productRepository.existsById(productId)) {
-            throw new ProductNotExistException(productId);
+        Option option = optionRepository.findByIdAndProductId(optionId, productId)
+                .orElseThrow(() -> new OptionNotExistException(optionId));
+
+        int optionCount = optionRepository.countByProduct(entityManager.getReference(Product.class, productId));
+        if (optionCount <= 1) {
+            throw new LastOptionException();
         }
-        if (!optionRepository.existsById(optionId)) {
-            throw new OptionNotExistException(optionId);
-        }
-        optionRepository.deleteById(optionId);
+        optionRepository.delete(option);
     }
 
     @Transactional
