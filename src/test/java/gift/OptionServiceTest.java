@@ -2,21 +2,20 @@ package gift;
 
 import gift.entity.Option;
 import gift.entity.Product;
-import gift.exception.OptionNotExistException;
 import gift.repository.OptionRepository;
 import gift.repository.ProductRepository;
 import gift.service.OptionService;
-import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@SpringBootTest
-@Transactional
+@DataJpaTest
+@Import(OptionService.class)
 class OptionServiceTest {
 
     @Autowired
@@ -41,9 +40,9 @@ class OptionServiceTest {
     void 옵션_수량을_차감() {
         // when
         optionService.reduceOptionQuantity(savedOption.getId(), 1);
+        Option updatedOption = optionRepository.findById(savedOption.getId()).orElseThrow();
 
         // then
-        Option updatedOption = optionRepository.findById(savedOption.getId()).orElseThrow();
         assertThat(updatedOption.getQuantity()).isEqualTo(99);
     }
 
